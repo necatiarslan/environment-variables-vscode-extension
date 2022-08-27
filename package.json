@@ -1,0 +1,133 @@
+{
+	"name": "environment-variable-vscode-extension",
+	"displayName": "Environment Variables",
+	"description": "Environment Variable Explorer",
+	"version": "1.0.1",
+	"publisher": "NecatiARSLAN",
+	"icon": "media/environment-variable-extension-logo.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/necatiarslan/environment-variable-vscode-extension"
+	},
+	"engines": {
+		"vscode": "^1.69.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onView:TreeView"
+	],
+	"main": "./dist/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "TreeView.refresh",
+				"title": "Refresh",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "TreeView.filter",
+				"title": "Filter",
+				"icon": "$(filter)"
+			},
+			{
+				"command": "TreeView.addToFav",
+				"title": "Add Fav"
+			},
+			{
+				"command": "TreeView.deleteFromFav",
+				"title": "UnFav"
+			},
+			{
+				"command": "TreeView.copy",
+				"title": "Copy"
+			}
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "TreeView.refresh",
+					"when": "view == TreeView",
+					"group": "navigation"
+				},
+				{
+					"command": "TreeView.filter",
+					"when": "view == TreeView",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "TreeView.addToFav",
+					"when": "view == TreeView",
+					"group": "fav"
+				},
+				{
+					"command": "TreeView.deleteFromFav",
+					"when": "view == TreeView",
+					"group": "fav"
+				},
+				{
+					"command": "TreeView.copy",
+					"when": "view == TreeView",
+					"group": "copy"
+				}
+			]
+		},
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "environment-variable-explorer",
+					"title": "Environment Variables",
+					"icon": "media/environment-variable-extension-logo.png"
+				}
+			]
+		},
+		"views": {
+			"environment-variable-explorer": [
+				{
+					"id": "TreeView",
+					"name": "Environment Variables",
+					"icon": "media/environment-variable-extension-logo.png"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run package",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"package": "webpack --mode production --devtool hidden-source-map",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "npm run compile-tests && npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/base-64": "^1.0.0",
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.1.1",
+		"@types/node": "16.x",
+		"@types/vscode": "^1.69.0",
+		"@typescript-eslint/eslint-plugin": "^5.30.0",
+		"@typescript-eslint/parser": "^5.30.0",
+		"@vscode/test-electron": "^2.1.5",
+		"eslint": "^8.18.0",
+		"glob": "^8.0.3",
+		"mocha": "^10.0.0",
+		"ts-loader": "^9.3.1",
+		"typescript": "^4.7.4",
+		"webpack": "^5.73.0",
+		"webpack-cli": "^4.10.0"
+	},
+	"dependencies": {
+		"@vscode/codicons": "^0.0.32",
+		"@vscode/webview-ui-toolkit": "^1.0.0",
+		"base-64": "^1.0.0",
+		"node-fetch": "^3.2.9",
+		"tmp": "^0.2.1",
+		"ts-clipboard": "^1.0.17"
+	}
+}
