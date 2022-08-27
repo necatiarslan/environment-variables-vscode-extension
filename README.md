@@ -9,12 +9,13 @@
 
 ![screenshoot](./media/screenshot1.png)
 
-
+This is a Vscode extension to list you system environment variables.
 
 ## Todo List
 - Copy
 - Add/Remove Fav
 - Add,Update,Delete
+- Export / Import
 
 
 

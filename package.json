@@ -2,9 +2,9 @@
 	"name": "environment-variable-vscode-extension",
 	"displayName": "Environment Variables",
 	"description": "Environment Variable Explorer",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"publisher": "NecatiARSLAN",
-	"icon": "media/environment-variable-extension-logo.png",
+	"icon": "media/marketplace-logo.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/necatiarslan/environment-variable-vscode-extension"
@@ -80,7 +80,7 @@
 				{
 					"id": "environment-variable-explorer",
 					"title": "Environment Variables",
-					"icon": "media/environment-variable-extension-logo.png"
+					"icon": "media/activitybar-logo.png"
 				}
 			]
 		},
@@ -89,7 +89,7 @@
 				{
 					"id": "TreeView",
 					"name": "Environment Variables",
-					"icon": "media/environment-variable-extension-logo.png"
+					"icon": "media/activitybar-logo.png"
 				}
 			]
 		}
