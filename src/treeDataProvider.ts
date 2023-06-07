@@ -2,6 +2,7 @@
 import * as vscode from 'vscode';
 import { TreeItem, TreeItemType } from './treeItem';
 import { env } from 'node:process';
+import * as ui from './ui';
 
 export class TreeDataProvider implements vscode.TreeDataProvider<TreeItem>
 {
@@ -11,9 +12,11 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeItem>
 	filterString: string = '';
 	itemList: TreeItem[] = [];
 	visibleItemList: TreeItem[] = [];
+	envVaribleSeperator: string = ';';
 
 	constructor() {
 		this.loadTreeItems();
+		this.envVaribleSeperator = ui.getEnvVarSeperator();
 	}
 
 	refresh(): void {
@@ -41,7 +44,8 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeItem>
 			return Promise.resolve(this.visibleItemList);
 		}
 		else if (element.TreeItemType === TreeItemType.Key) {
-			let values: string[] = element.Value.split(':');
+			let values: string[] = element.Value.split(this.envVaribleSeperator);
+			
 			let valueTreeItemList = [];
 			for (var i in values) {
 				let treeItem = new TreeItem(values[i], element.Key, values[i], TreeItemType.Value);

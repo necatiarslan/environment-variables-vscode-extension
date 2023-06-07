@@ -2,7 +2,7 @@
 	"name": "environment-variable-vscode-extension",
 	"displayName": "Environment Variables",
 	"description": "Environment Variable Explorer",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"publisher": "NecatiARSLAN",
 	"icon": "media/marketplace-logo.png",
 	"repository": {

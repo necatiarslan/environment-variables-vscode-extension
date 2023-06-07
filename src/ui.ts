@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import * as os from 'os';
 
 var outputChannel: vscode.OutputChannel;
 var logsOutputChannel: vscode.OutputChannel;
@@ -148,4 +149,20 @@ export function isValidDate(dateString: string): boolean {
     return false; // NaN value, Invalid date
   }
   return d.toISOString().slice(0, 10) === dateString;
+}
+
+export function getEnvVarSeperator(): string {
+  if(os.platform().includes('win32'))
+  {
+    return ';';
+  }
+  if(os.platform().includes('darwin'))
+  {
+    return ':';
+  }
+  if(os.platform().includes('linux'))
+  {
+    return ':';
+  }
+  return ":";
 }
