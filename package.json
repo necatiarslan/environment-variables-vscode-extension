@@ -10,7 +10,7 @@
 		"url": "https://github.com/necatiarslan/environment-variables-vscode-extension"
 	},
 	"engines": {
-		"vscode": "^1.106.1"
+		"vscode": "^1.104.0"
 	},
 	"categories": [
 		"Other"
@@ -75,6 +75,16 @@
 				"icon": "$(add)"
 			},
 			{
+				"command": "TreeView.export",
+				"title": "Export",
+				"icon": "$(arrow-down)"
+			},
+			{
+				"command": "TreeView.import",
+				"title": "Import",
+				"icon": "$(arrow-up)"
+			},
+			{
 				"command": "TreeView.searchGoogle",
 				"title": "Search Google"
 			}
@@ -82,20 +92,30 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "TreeView.add",
-					"when": "view == TreeView",
-					"group": "navigation"
-				},
-				{
-					"command": "TreeView.refresh",
-					"when": "view == TreeView",
-					"group": "navigation"
-				},
-				{
-					"command": "TreeView.filter",
-					"when": "view == TreeView",
-					"group": "navigation"
-				}
+				"command": "TreeView.add",
+				"when": "view == TreeView",
+				"group": "navigation@1"
+			},
+			{
+				"command": "TreeView.export",
+				"when": "view == TreeView",
+				"group": "navigation@2"
+			},
+			{
+				"command": "TreeView.import",
+				"when": "view == TreeView",
+				"group": "navigation@3"
+			},
+			{
+				"command": "TreeView.filter",
+				"when": "view == TreeView",
+				"group": "navigation@4"
+			},
+			{
+				"command": "TreeView.refresh",
+				"when": "view == TreeView",
+				"group": "navigation@5"
+			}
 			],
 			"view/item/context": [
 				{
@@ -161,6 +181,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
+		"@types/js-yaml": "^4.0.9",
 		"@types/base-64": "^1.0.2",
 		"@types/glob": "^9.0.0",
 		"@types/mocha": "^10.0.10",
@@ -179,6 +200,7 @@
 	"dependencies": {
 		"@vscode/codicons": "^0.0.42",
 		"base-64": "^1.0.0",
+		"js-yaml": "^4.1.0",
 		"node-fetch": "^3.3.2",
 		"tmp": "^0.2.5",
 		"ts-clipboard": "^1.0.17"
