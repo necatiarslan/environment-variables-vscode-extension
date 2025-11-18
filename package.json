@@ -2,12 +2,12 @@
 	"name": "environment-variable-vscode-extension",
 	"displayName": "Environment Variables",
 	"description": "Manage your system Environment Variables easly",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"publisher": "NecatiARSLAN",
 	"icon": "media/marketplace-logo.png",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/necatiarslan/environment-variable-vscode-extension"
+		"url": "https://github.com/necatiarslan/environment-variables-vscode-extension"
 	},
 	"engines": {
 		"vscode": "^1.106.1"
