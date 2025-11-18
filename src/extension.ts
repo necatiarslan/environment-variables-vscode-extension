@@ -64,6 +64,18 @@ export function activate(context: vscode.ExtensionContext) {
 		treeView.importNode(node);
 	});
 
+	vscode.commands.registerCommand('TreeView.editSubNode', (node: TreeItem) => {
+		treeView.editSubNode(node);
+	});
+
+	vscode.commands.registerCommand('TreeView.removeSubNode', (node: TreeItem) => {
+		treeView.removeSubNode(node);
+	});
+
+	vscode.commands.registerCommand('TreeView.addSubNode', (node: TreeItem) => {
+		treeView.addSubNode(node);
+	});
+
 	ui.logToOutput('Extension activation completed');
 }
 

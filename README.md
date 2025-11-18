@@ -2,17 +2,13 @@
 
 ![screenshoot](media/screenshot1.png)
 
-Easly manage your system environment variables within vscode.
+Easily manage your system environment variables within vscode.
 
 ## ✨ Features  
-- Add new environment variable
-- Edit an environment variable value
-- Remove an environment variable
-- Copy Varible Name or Value
-- Export all varibles
-- Export a single variable
-- Import a single variable (override existing or skip if needed)
-- Import all variables (override existing or skip if needed)
+- **Manage Environment Variables:** Add, edit, and remove variables.
+- **Copy Variable Details:** Quickly copy variable names or values.
+- **Export Variables:** Export all or selected environment variables.
+- **Import Variables:** Import all or selected environment variables, with options to override existing or skip.
 
 ## Sponsor Me
 If you find this extension useful, you can [sponsor me on GitHub](https://github.com/sponsors/necatiarslan).

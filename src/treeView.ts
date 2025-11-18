@@ -170,6 +170,173 @@ export class TreeView {
 		}
 	}
 
+	async editSubNode(node: TreeItem) {
+		ui.logToOutput('TreeView.editSubNode Started');
+		if(node.TreeItemType !== TreeItemType.Value){
+			return;
+		}
+
+		try {
+			const parentNode = node.ParentTreeItem;
+			if (!parentNode) {
+				ui.showErrorMessage('Cannot find parent environment variable.');
+				return;
+			}
+
+			const currentValue = node.Value;
+			const newValue = await vscode.window.showInputBox({ 
+				value: currentValue, 
+				placeHolder: 'Enter new value for this path',
+				prompt: `Editing path in ${parentNode.Key}`
+			});
+
+			if (newValue === undefined) {
+				return; // User cancelled
+			}
+
+			if (currentValue === newValue) {
+				ui.logToOutput(`Sub-node value has not been changed.`);
+				ui.showInfoMessage(`Sub-node value has not been changed.`);
+				return;
+			}
+
+			// Get the current environment variable value
+			const envVarValue = process.env[parentNode.Key] || '';
+			const separator = ui.getEnvVarSeperator();
+			const values = envVarValue.split(separator);
+
+			// Find and replace the old value with the new value
+			const index = values.indexOf(currentValue);
+			if (index !== -1) {
+				if (newValue.trim() === '') {
+					// If new value is empty, remove it
+					values.splice(index, 1);
+					ui.logToOutput(`Empty value provided, removing the path from ${parentNode.Key}.`);
+				} else {
+					values[index] = newValue;
+				}
+
+				// Reconstruct the environment variable
+				process.env[parentNode.Key] = values.join(separator);
+				this.treeDataProvider.refresh();
+
+				ui.showInfoMessage(`Path in "${parentNode.Key}" has been updated.`);
+				ui.logToOutput(`Path in "${parentNode.Key}" has been updated from "${currentValue}" to "${newValue}".`);
+			} else {
+				ui.showErrorMessage(`Could not find the path value in ${parentNode.Key}.`);
+				ui.logToOutput(`Could not find the path value "${currentValue}" in ${parentNode.Key}.`);
+			}
+
+		} catch (error) {
+			ui.logToOutput('TreeView.editSubNode Error: ' + error.message);
+			ui.showErrorMessage('Failed to edit path: ' + error.message);
+		}
+	}
+
+	async removeSubNode(node: TreeItem) {
+		ui.logToOutput('TreeView.removeSubNode Started');
+		if(node.TreeItemType !== TreeItemType.Value){
+			return;
+		}
+
+		try {
+			const parentNode = node.ParentTreeItem;
+			if (!parentNode) {
+				ui.showErrorMessage('Cannot find parent environment variable.');
+				return;
+			}
+
+			const confirmation = `Are you sure you want to remove this path from "${parentNode.Key}"?\n\nPath: ${node.Value}`;
+			const response = await vscode.window.showWarningMessage(confirmation, { modal: true }, 'Yes', 'No');
+
+			if (response !== 'Yes') {
+				return;
+			}
+
+			// Get the current environment variable value
+			const envVarValue = process.env[parentNode.Key] || '';
+			const separator = ui.getEnvVarSeperator();
+			const values = envVarValue.split(separator);
+
+			// Find and remove the value
+			const index = values.indexOf(node.Value);
+			if (index !== -1) {
+				values.splice(index, 1);
+
+				// Reconstruct the environment variable
+				process.env[parentNode.Key] = values.join(separator);
+				this.treeDataProvider.refresh();
+
+				ui.showInfoMessage(`Path has been removed from "${parentNode.Key}".`);
+				ui.logToOutput(`Path "${node.Value}" has been removed from "${parentNode.Key}".`);
+			} else {
+				ui.showErrorMessage(`Could not find the path value in ${parentNode.Key}.`);
+				ui.logToOutput(`Could not find the path value "${node.Value}" in ${parentNode.Key}.`);
+			}
+
+		} catch (error) {
+			ui.logToOutput('TreeView.removeSubNode Error: ' + error.message);
+			ui.showErrorMessage('Failed to remove path: ' + error.message);
+		}
+	}
+
+	async addSubNode(node: TreeItem) {
+		ui.logToOutput('TreeView.addSubNode Started');
+		
+		// Allow adding to both Key and Value types
+		// If it's a Value type, use its parent
+		let parentNode: TreeItem;
+		if (node.TreeItemType === TreeItemType.Value) {
+			parentNode = node.ParentTreeItem;
+		} else if (node.TreeItemType === TreeItemType.Key) {
+			parentNode = node;
+		} else {
+			return;
+		}
+
+		if (!parentNode) {
+			ui.showErrorMessage('Cannot find environment variable.');
+			return;
+		}
+
+		try {
+			const newValue = await vscode.window.showInputBox({ 
+				placeHolder: 'Enter new path to add',
+				prompt: `Adding new path to ${parentNode.Key}`
+			});
+
+			if (newValue === undefined || newValue.trim() === '') {
+				return; // User cancelled or entered empty value
+			}
+
+			// Get the current environment variable value
+			const envVarValue = process.env[parentNode.Key] || '';
+			const separator = ui.getEnvVarSeperator();
+			const values = envVarValue.split(separator).filter(v => v.trim() !== '');
+
+			// Check if the value already exists
+			if (values.includes(newValue)) {
+				ui.showWarningMessage(`Path "${newValue}" already exists in "${parentNode.Key}".`);
+				ui.logToOutput(`Path "${newValue}" already exists in "${parentNode.Key}".`);
+				return;
+			}
+
+			// Add the new value
+			values.push(newValue);
+
+			// Reconstruct the environment variable
+			process.env[parentNode.Key] = values.join(separator);
+			this.treeDataProvider.refresh();
+
+			ui.showInfoMessage(`New path has been added to "${parentNode.Key}".`);
+			ui.logToOutput(`New path "${newValue}" has been added to "${parentNode.Key}".`);
+
+		} catch (error) {
+			ui.logToOutput('TreeView.addSubNode Error: ' + error.message);
+			ui.showErrorMessage('Failed to add path: ' + error.message);
+		}
+	}
+
 	async exportEnvironmentVariables() {
 		ui.logToOutput('TreeView.exportEnvironmentVariables Started');
 

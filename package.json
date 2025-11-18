@@ -1,8 +1,8 @@
 {
 	"name": "environment-variable-vscode-extension",
 	"displayName": "Environment Variables",
-	"description": "Manage your system Environment Variables easly",
-	"version": "1.2.0",
+	"description": "Manage your System Environment Variables easily",
+	"version": "1.3.0",
 	"publisher": "NecatiARSLAN",
 	"icon": "media/marketplace-logo.png",
 	"repository": {
@@ -63,15 +63,15 @@
 			},
 			{
 				"command": "TreeView.remove",
-				"title": "Remove"
+				"title": "Remove Variable"
 			},
 			{
 				"command": "TreeView.edit",
-				"title": "Edit"
+				"title": "Edit Variable"
 			},
 			{
 				"command": "TreeView.add",
-				"title": "Add",
+				"title": "Add Variable",
 				"icon": "$(add)"
 			},
 			{
@@ -95,6 +95,18 @@
 			{
 				"command": "TreeView.searchGoogle",
 				"title": "Search Google"
+			},
+			{
+				"command": "TreeView.editSubNode",
+				"title": "Edit Value"
+			},
+			{
+				"command": "TreeView.removeSubNode",
+				"title": "Remove Value"
+			},
+			{
+				"command": "TreeView.addSubNode",
+				"title": "Add Value"
 			}
 		],
 		"menus": {
@@ -162,10 +174,25 @@
 					"group": "import-export"
 				},
 				{
-					"command": "TreeView.searchGoogle",
-					"when": "view == TreeView",
-					"group": "search"
-				}
+				"command": "TreeView.searchGoogle",
+				"when": "view == TreeView",
+				"group": "search"
+			},
+			{
+				"command": "TreeView.editSubNode",
+				"when": "view == TreeView",
+				"group": "subnode-edit"
+			},
+			{
+				"command": "TreeView.removeSubNode",
+				"when": "view == TreeView",
+				"group": "subnode-edit"
+			},
+			{
+				"command": "TreeView.addSubNode",
+				"when": "view == TreeView",
+				"group": "subnode-edit"
+			}
 			]
 		},
 		"viewsContainers": {
