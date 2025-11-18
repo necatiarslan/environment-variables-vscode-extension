@@ -1,8 +1,8 @@
 {
 	"name": "environment-variable-vscode-extension",
 	"displayName": "Environment Variables",
-	"description": "Environment Variable Explorer",
-	"version": "1.0.3",
+	"description": "Manage your system Environment Variables easly",
+	"version": "1.1.0",
 	"publisher": "NecatiARSLAN",
 	"icon": "media/marketplace-logo.png",
 	"repository": {
@@ -10,13 +10,10 @@
 		"url": "https://github.com/necatiarslan/environment-variable-vscode-extension"
 	},
 	"engines": {
-		"vscode": "^1.69.0"
+		"vscode": "^1.75.0"
 	},
 	"categories": [
 		"Other"
-	],
-	"activationEvents": [
-		"onView:TreeView"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -42,6 +39,22 @@
 			{
 				"command": "TreeView.copy",
 				"title": "Copy"
+			},
+			{
+				"command": "TreeView.remove",
+				"title": "Remove"
+			},
+			{
+				"command": "TreeView.edit",
+				"title": "Edit"
+			},
+			{
+				"command": "TreeView.add",
+				"title": "Add"
+			},
+			{
+				"command": "TreeView.searchGoogle",
+				"title": "Search Google"
 			}
 		],
 		"menus": {
@@ -72,6 +85,26 @@
 					"command": "TreeView.copy",
 					"when": "view == TreeView",
 					"group": "copy"
+				},
+				{
+					"command": "TreeView.edit",
+					"when": "view == TreeView",
+					"group": "edit"
+				},
+				{
+					"command": "TreeView.remove",
+					"when": "view == TreeView",
+					"group": "edit"
+				},
+				{
+					"command": "TreeView.add",
+					"when": "view == TreeView",
+					"group": "edit"
+				},
+				{
+					"command": "TreeView.searchGoogle",
+					"when": "view == TreeView",
+					"group": "search"
 				}
 			]
 		},
@@ -110,7 +143,7 @@
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "16.x",
-		"@types/vscode": "^1.69.0",
+		"@types/vscode": "^1.75.0",
 		"@typescript-eslint/eslint-plugin": "^5.30.0",
 		"@typescript-eslint/parser": "^5.30.0",
 		"@vscode/test-electron": "^2.1.5",

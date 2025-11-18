@@ -32,6 +32,22 @@ export function activate(context: vscode.ExtensionContext) {
 		treeView.copyToClipboard(node);
 	});
 
+	vscode.commands.registerCommand('TreeView.edit', (node: TreeItem) => {
+		treeView.editNode(node);
+	});
+
+	vscode.commands.registerCommand('TreeView.add', (node: TreeItem) => {
+		treeView.addNode(node);
+	});
+
+	vscode.commands.registerCommand('TreeView.searchGoogle', (node: TreeItem) => {
+		treeView.searchGoogle(node);
+	});
+
+	vscode.commands.registerCommand('TreeView.remove', (node: TreeItem) => {
+		treeView.removeNode(node);
+	});
+
 	ui.logToOutput('Extension activation completed');
 }
 

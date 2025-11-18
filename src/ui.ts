@@ -166,3 +166,16 @@ export function getEnvVarSeperator(): string {
   }
   return ":";
 }
+
+export function getPlatformName(): string {
+  if (os.platform().includes('win32')) {
+    return 'Windows';
+  }
+  if (os.platform().includes('darwin')) {
+    return 'macOS';
+  }
+  if (os.platform().includes('linux')) {
+    return 'Linux';
+  }
+  return 'macOS';
+}
