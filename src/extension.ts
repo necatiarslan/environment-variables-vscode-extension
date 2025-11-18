@@ -56,6 +56,14 @@ export function activate(context: vscode.ExtensionContext) {
 		treeView.importEnvironmentVariables();
 	});
 
+	vscode.commands.registerCommand('TreeView.exportNode', (node: TreeItem) => {
+		treeView.exportNode(node);
+	});
+
+	vscode.commands.registerCommand('TreeView.importNode', (node: TreeItem) => {
+		treeView.importNode(node);
+	});
+
 	ui.logToOutput('Extension activation completed');
 }
 

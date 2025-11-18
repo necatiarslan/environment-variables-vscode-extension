@@ -2,7 +2,7 @@
 	"name": "environment-variable-vscode-extension",
 	"displayName": "Environment Variables",
 	"description": "Manage your system Environment Variables easly",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"publisher": "NecatiARSLAN",
 	"icon": "media/marketplace-logo.png",
 	"repository": {
@@ -85,6 +85,14 @@
 				"icon": "$(arrow-up)"
 			},
 			{
+				"command": "TreeView.exportNode",
+				"title": "Export Variable"
+			},
+			{
+				"command": "TreeView.importNode",
+				"title": "Import Variable"
+			},
+			{
 				"command": "TreeView.searchGoogle",
 				"title": "Search Google"
 			}
@@ -142,6 +150,16 @@
 					"command": "TreeView.remove",
 					"when": "view == TreeView",
 					"group": "edit"
+				},
+				{
+					"command": "TreeView.exportNode",
+					"when": "view == TreeView",
+					"group": "import-export"
+				},
+				{
+					"command": "TreeView.importNode",
+					"when": "view == TreeView",
+					"group": "import-export"
 				},
 				{
 					"command": "TreeView.searchGoogle",

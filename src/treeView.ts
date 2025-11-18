@@ -366,5 +366,70 @@ export class TreeView {
 		}
 	}
 
+	async exportNode(node: TreeItem) {
+		ui.logToOutput('TreeView.exportNode Started');
+		
+		if (node.TreeItemType !== TreeItemType.Key) {
+			ui.showWarningMessage('Please select an environment variable to export');
+			return;
+		}
+
+		try {
+			const varName = node.Key;
+			const varValue = process.env[varName];
+
+			// Create YAML content for single variable
+			const exportData = {
+				metadata: {
+					exportDate: new Date().toISOString(),
+					platform: ui.getPlatformName(),
+					version: '1.0',
+					exportType: 'single-variable'
+				},
+				environmentVariables: {
+					[varName]: varValue
+				}
+			};
+
+			const yamlContent = yaml.dump(exportData, {
+				indent: 2,
+				lineWidth: -1,
+				noRefs: true
+			});
+
+			// Show save dialog with variable name as default filename
+			const safeFileName = varName.replace(/[^a-zA-Z0-9_-]/g, '_');
+			const uri = await vscode.window.showSaveDialog({
+				defaultUri: vscode.Uri.file(`${safeFileName}.yaml`),
+				filters: {
+					'YAML files': ['yaml', 'yml']
+				},
+				saveLabel: 'Export'
+			});
+
+			if (uri) {
+				// Write to file
+				const fs = require('fs');
+				fs.writeFileSync(uri.fsPath, yamlContent, 'utf8');
+				
+				ui.showInfoMessage(`Successfully exported environment variable "${varName}" to ${uri.fsPath}`);
+				ui.logToOutput(`Exported environment variable "${varName}" to ${uri.fsPath}`);
+			}
+
+		} catch (error) {
+			ui.logToOutput('TreeView.exportNode Error: ' + error.message);
+			ui.showErrorMessage('Failed to export environment variable: ' + error.message);
+		}
+	}
+
+	async importNode(node: TreeItem) {
+		ui.logToOutput('TreeView.importNode Started');
+
+		// Note: importNode works the same as importEnvironmentVariables
+		// It doesn't need the node parameter, but we keep it for consistency
+		// The import dialog allows selecting any YAML file
+		await this.importEnvironmentVariables();
+	}
+
 }
 
