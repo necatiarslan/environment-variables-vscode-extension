@@ -30,11 +30,152 @@ export class TreeView {
 	}
 
 	async addToFav(node: TreeItem) {
-		ui.logToOutput('TreeView.addToFavDAG Started');
-		node.isFav = true;
+			ui.logToOutput('TreeView.addToFav Started');
+			node.isFav = true;
 	}
 
-	async deleteFromFav(node: TreeItem) {
+	async updateTerminals() {
+		ui.logToOutput('TreeView.updateTerminals Started');
+
+		try {
+			const terminals = vscode.window.terminals;
+			
+			if (terminals.length === 0) {
+				ui.showInfoMessage('No active terminals found.');
+				return;
+			}
+
+			// Ask user for confirmation
+			const response = await vscode.window.showInformationMessage(
+				`Update environment variables in ${terminals.length} terminal(s)?\n\nThis will send export commands to all active terminals.`,
+				{ modal: true },
+				'Update All',
+				'Cancel'
+			);
+
+			if (response !== 'Update All') {
+				return;
+			}
+
+			// Build export commands
+			let updateCommands: string[] = [];
+			const isWindows = process.platform === 'win32';
+
+			for (const [key, value] of Object.entries(process.env)) {
+				if (value !== undefined) {
+					const escapedValue = value.replace(/"/g, '\\"');
+					
+					if (isWindows) {
+						updateCommands.push(`set ${key}=${value}`);
+					} else {
+						updateCommands.push(`export ${key}="${escapedValue}"`);
+					}
+				}
+			}
+
+			// Send commands to all terminals
+			let terminalCount = 0;
+			for (const terminal of terminals) {
+				try {
+					if (isWindows) {
+						for (const cmd of updateCommands) {
+							terminal.sendText(cmd, false);
+						}
+						terminal.sendText('');
+					} else {
+						const allCommands = updateCommands.join(' && ');
+						terminal.sendText(allCommands, true);
+					}
+					terminalCount++;
+				} catch (error) {
+					ui.logToOutput(`Failed to update terminal: ${error.message}`);
+				}
+			}
+
+			ui.showInfoMessage(`Environment variables sent to ${terminalCount} terminal(s). Variables updated: ${Object.keys(process.env).length}`);
+			ui.logToOutput(`Updated ${terminalCount} terminals with ${Object.keys(process.env).length} environment variables.`);
+
+		} catch (error) {
+			ui.logToOutput('TreeView.updateTerminals Error: ' + error.message);
+			ui.showErrorMessage('Failed to update terminals: ' + error.message);
+		}
+	}
+
+async promptUpdateTerminals(key?: string) {
+	ui.logToOutput('TreeView.promptUpdateTerminals Started');
+	
+	const terminals = vscode.window.terminals;
+	if (terminals.length === 0) {
+		return; // No terminals to update
+	}
+
+	const response = await vscode.window.showInformationMessage(
+		`Update environment variables${key ? ` for "${key}"` : ''} in ${terminals.length} active terminal(s)?`,
+		'Update Now',
+		'Skip'
+	);
+
+	if (response === 'Update Now') {
+		await this.updateTerminalsWithoutPrompt(key);
+	}
+}
+
+async updateTerminalsWithoutPrompt(key?: string) {
+	ui.logToOutput('TreeView.updateTerminalsWithoutPrompt Started');
+
+	try {
+		const terminals = vscode.window.terminals;
+		
+		if (terminals.length === 0) {
+			return;
+		}
+
+		// Build export commands
+		let updateCommands: string[] = [];
+		const isWindows = process.platform === 'win32';
+
+		for (const [envKey, value] of Object.entries(process.env)) {
+			if (key && envKey !== key) {
+				continue; // Skip if a specific key is provided and doesn't match
+			}
+			if (value !== undefined) {
+				const escapedValue = value.replace(/"/g, '\\"');
+				
+				if (isWindows) {
+					updateCommands.push(`set ${envKey}=${value}`);
+				} else {
+					updateCommands.push(`export ${envKey}="${escapedValue}"`);
+				}
+			}
+		}
+
+		// Send commands to all terminals
+		let terminalCount = 0;
+		for (const terminal of terminals) {
+			try {
+				if (isWindows) {
+					for (const cmd of updateCommands) {
+						terminal.sendText(cmd, false);
+					}
+					terminal.sendText('');
+				} else {
+					const allCommands = updateCommands.join(' && ');
+					terminal.sendText(allCommands, true);
+				}
+				terminalCount++;
+			} catch (error) {
+				ui.logToOutput(`Failed to update terminal: ${error.message}`);
+			}
+		}
+
+		ui.logToOutput(`Updated ${terminalCount} terminals with environment variables.`);
+
+	} catch (error) {
+		ui.logToOutput('TreeView.updateTerminalsWithoutPrompt Error: ' + error.message);
+	}
+}
+
+async deleteFromFav(node: TreeItem) {
 		ui.logToOutput('TreeView.deleteFromFavDAG Started');
 		node.isFav = false;
 	}
@@ -91,6 +232,8 @@ export class TreeView {
 				this.treeDataProvider.refresh();
 				ui.showInfoMessage(`Environment variable "${node.Key}" has been updated.`);
 				ui.logToOutput(`Environment variable "${node.Key}" has been updated.`);
+				// Prompt to update terminals
+				await this.promptUpdateTerminals(node.Key);
 			}
 
 		} catch (error) {
@@ -115,14 +258,16 @@ export class TreeView {
 				this.treeDataProvider.refresh();
 				ui.showInfoMessage(`Environment variable "${newEnvVariableName}" has been added.`);
 				ui.logToOutput(`Environment variable "${newEnvVariableName}" has been added.`);
-			}
-
-		} catch (error) {
-			ui.logToOutput('TreeView.addNode Error: ' + error.message);
+			// Prompt to update terminals
+			await this.promptUpdateTerminals(node.Key);
 		}
-	}
 
-	async searchGoogle(node: TreeItem) {
+	} catch (error) {
+		ui.logToOutput('TreeView.addNode Error: ' + error.message);
+	}
+}
+
+async searchGoogle(node: TreeItem) {
 		ui.logToOutput('TreeView.searchGoogle Started');
 		if(node.TreeItemType !== TreeItemType.Key){
 			return;
@@ -162,8 +307,8 @@ export class TreeView {
 				this.treeDataProvider.refresh();
 
 				ui.showInfoMessage(`Environment variable "${node.Key}" has been removed.`);
-				ui.logToOutput(`Environment variable "${node.Key}" has been removed.`);
-			} catch (error) {
+				ui.logToOutput(`Environment variable "${node.Key}" has been removed.`);			// Prompt to update terminals
+			await this.promptUpdateTerminals(node.Key);			} catch (error) {
 				ui.showErrorMessage(`Failed to remove environment variable "${node.Key}": ${error.message}`);
 				ui.logToOutput(`Failed to remove environment variable "${node.Key}": ${error.message}`);
 			}
@@ -221,8 +366,8 @@ export class TreeView {
 				this.treeDataProvider.refresh();
 
 				ui.showInfoMessage(`Path in "${parentNode.Key}" has been updated.`);
-				ui.logToOutput(`Path in "${parentNode.Key}" has been updated from "${currentValue}" to "${newValue}".`);
-			} else {
+				ui.logToOutput(`Path in "${parentNode.Key}" has been updated from "${currentValue}" to "${newValue}".`);			// Prompt to update terminals
+			await this.promptUpdateTerminals(parentNode.Key);			} else {
 				ui.showErrorMessage(`Could not find the path value in ${parentNode.Key}.`);
 				ui.logToOutput(`Could not find the path value "${currentValue}" in ${parentNode.Key}.`);
 			}
@@ -268,8 +413,8 @@ export class TreeView {
 				this.treeDataProvider.refresh();
 
 				ui.showInfoMessage(`Path has been removed from "${parentNode.Key}".`);
-				ui.logToOutput(`Path "${node.Value}" has been removed from "${parentNode.Key}".`);
-			} else {
+				ui.logToOutput(`Path "${node.Value}" has been removed from "${parentNode.Key}".`);			// Prompt to update terminals
+			await this.promptUpdateTerminals(parentNode.Key);			} else {
 				ui.showErrorMessage(`Could not find the path value in ${parentNode.Key}.`);
 				ui.logToOutput(`Could not find the path value "${node.Value}" in ${parentNode.Key}.`);
 			}
@@ -329,8 +474,8 @@ export class TreeView {
 			this.treeDataProvider.refresh();
 
 			ui.showInfoMessage(`New path has been added to "${parentNode.Key}".`);
-			ui.logToOutput(`New path "${newValue}" has been added to "${parentNode.Key}".`);
-
+			ui.logToOutput(`New path "${newValue}" has been added to "${parentNode.Key}".`);		// Prompt to update terminals
+		await this.promptUpdateTerminals(parentNode.Key);
 		} catch (error) {
 			ui.logToOutput('TreeView.addSubNode Error: ' + error.message);
 			ui.showErrorMessage('Failed to add path: ' + error.message);

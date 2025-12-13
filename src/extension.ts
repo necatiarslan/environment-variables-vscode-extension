@@ -76,6 +76,10 @@ export function activate(context: vscode.ExtensionContext) {
 		treeView.addSubNode(node);
 	});
 
+	vscode.commands.registerCommand('TreeView.updateTerminals', () => {
+		treeView.updateTerminals();
+	});
+
 	ui.logToOutput('Extension activation completed');
 }
 

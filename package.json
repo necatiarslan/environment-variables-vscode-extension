@@ -2,7 +2,7 @@
 	"name": "environment-variable-vscode-extension",
 	"displayName": "Environment Variables",
 	"description": "Manage your System Environment Variables easily",
-	"version": "1.3.0",
+	"version": "1.3.1",
 	"publisher": "NecatiARSLAN",
 	"icon": "media/marketplace-logo.png",
 	"repository": {
@@ -107,6 +107,11 @@
 			{
 				"command": "TreeView.addSubNode",
 				"title": "Add Value"
+			},
+			{
+				"command": "TreeView.updateTerminals",
+				"title": "Update Terminals",
+				"icon": "$(terminal)"
 			}
 		],
 		"menus": {
@@ -135,6 +140,11 @@
 				"command": "TreeView.refresh",
 				"when": "view == TreeView",
 				"group": "navigation@5"
+			},
+			{
+				"command": "TreeView.updateTerminals",
+				"when": "view == TreeView",
+				"group": "navigation@6"
 			}
 			],
 			"view/item/context": [
